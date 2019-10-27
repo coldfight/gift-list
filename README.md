@@ -39,11 +39,6 @@ All app preview screenshots were taken by running `ionic serve --lab` on a retin
   <img src="resources/screenshots/SchedulePage.png" alt="Schedule">
 
 
-- [About Page](https://github.com/ionic-team/ionic-conference-app/blob/master/src/app/pages/about/about.html)
-
-  <img src="resources/screenshots/AboutPage.png" alt="Schedule">
-
-
 - To see more images of the app, check out the [screenshots directory](https://github.com/ionic-team/ionic-conference-app/tree/master/resources/screenshots)!
 
 
