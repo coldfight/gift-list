@@ -41,6 +41,6 @@ export class GiftListPage implements OnInit, OnDestroy {
   onDelete(id: string) {}
 
   onAddGift() {
-    console.log("Open the form to add a new gift...")
+    console.log("Open the form to add a new gift...");
   }
 }

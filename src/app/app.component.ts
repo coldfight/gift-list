@@ -30,8 +30,8 @@ export class AppComponent implements OnInit {
       icon: "gift"
     },
     {
-      title: "People",
-      url: "/app/tabs/persons",
+      title: "Recipients",
+      url: "/app/tabs/recipients",
       icon: "people"
     },
     // @todo: Delete these items...

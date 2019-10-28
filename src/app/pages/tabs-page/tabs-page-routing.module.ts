@@ -28,13 +28,13 @@ const routes: Routes = [
         ]
       },
       {
-        path: "persons",
+        path: "recipients",
         children: [
           {
             path: "",
             loadChildren: () =>
-              import("../person-list/person-list.module").then(
-                m => m.PersonListPageModule
+              import("../recipient-list/recipient-list.module").then(
+                m => m.RecipientListPageModule
               )
           }
         ]

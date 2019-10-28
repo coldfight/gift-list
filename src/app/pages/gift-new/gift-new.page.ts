@@ -6,7 +6,7 @@ import {
   Validators
 } from "@angular/forms";
 import { GiftService } from "../../services/gift.service";
-import { Person } from "../../interfaces/person.interface";
+import { Recipient } from "../../interfaces/recipient.interface";
 
 @Component({
   selector: "gift-new",
@@ -14,7 +14,7 @@ import { Person } from "../../interfaces/person.interface";
   styleUrls: ["./gift-new.page.scss"]
 })
 export class GiftNewPage implements OnInit {
-  @Input() person: Person;
+  @Input() recipient: Recipient;
   form: FormGroup;
 
   validationMessages = {

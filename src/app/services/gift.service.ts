@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Gift } from "../interfaces/gift.interface";
 import { BehaviorSubject, Observable, of, from } from "rxjs";
 import { tap, take, switchMap } from "rxjs/operators";
-import { Person } from "../interfaces/person.interface";
+import { Recipient } from "../interfaces/recipient.interface";
 
 @Injectable({
   providedIn: "root"
@@ -31,8 +31,8 @@ export class GiftService {
   }
 
   // @todo: Temporary
-  setPeopleFixtures() {
-    const people: Person[] = [
+  setRecipientsFixtures() {
+    const recipients: Recipient[] = [
       {
         id: Math.floor(Math.random() * 10000000).toString(),
         name: "Brother In Law",
@@ -65,7 +65,7 @@ export class GiftService {
       }
     ];
     return this.storage
-      .set("people", people)
+      .set("recipients", recipients)
       .then(data => {
         return data;
       })
@@ -74,15 +74,15 @@ export class GiftService {
 
   // @todo: Temporary
   async setGiftFixtures() {
-    const people: Person[] = await this.storage.get("people");
-    console.log(people);
+    const recipients: Recipient[] = await this.storage.get("recipients");
+    console.log(recipients);
 
     const gifts: Gift[] = [
       {
         id: Math.floor(Math.random() * 10000000).toString(),
         name: "iPhone Case",
         price: 39.99,
-        person: people.filter((p: Person) => p.name === "Brother In Law")[0],
+        recipient: recipients.filter((r: Recipient) => r.name === "Brother In Law")[0],
         bought: false,
         userId: "abc"
       },
@@ -90,7 +90,7 @@ export class GiftService {
         id: Math.floor(Math.random() * 10000000).toString(),
         name: "Samsung Case",
         price: 39.99,
-        person: people.filter((p: Person) => p.name === "Sister")[0],
+        recipient: recipients.filter((r: Recipient) => r.name === "Sister")[0],
         bought: false,
         userId: "abc"
       },
@@ -98,7 +98,7 @@ export class GiftService {
         id: Math.floor(Math.random() * 10000000).toString(),
         name: "Fitbit Versa 2",
         price: 249.99,
-        person: people.filter((p: Person) => p.name === "Girlfriend")[0],
+        recipient: recipients.filter((r: Recipient) => r.name === "Girlfriend")[0],
         bought: false,
         userId: "abc"
       },
@@ -106,7 +106,7 @@ export class GiftService {
         id: Math.floor(Math.random() * 10000000).toString(),
         name: "iPad",
         price: 699.99,
-        person: people.filter((p: Person) => p.name === "Mom")[0],
+        recipient: recipients.filter((r: Recipient) => r.name === "Mom")[0],
         bought: false,
         userId: "abc"
       },
@@ -114,7 +114,7 @@ export class GiftService {
         id: Math.floor(Math.random() * 10000000).toString(),
         name: "iPad",
         price: 699.99,
-        person: people.filter((p: Person) => p.name === "Dad")[0],
+        recipient: recipients.filter((r: Recipient) => r.name === "Dad")[0],
         bought: false,
         userId: "abc"
       }

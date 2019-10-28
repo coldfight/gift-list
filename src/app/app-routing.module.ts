@@ -15,10 +15,10 @@ const routes: Routes = [
       )
   },
   {
-    path: "persons",
+    path: "recipients",
     loadChildren: () =>
-      import("./pages/person-list/person-list.module").then(
-        m => m.PersonListPageModule
+      import("./pages/recipient-list/recipient-list.module").then(
+        m => m.RecipientListPageModule
       )
   },
   {

@@ -1,10 +1,10 @@
-import { Person } from "./person.interface";
+import { Recipient } from "./recipient.interface";
 
 export interface Gift {
   id: string;
   name: string;
   price: number;
   bought?: boolean;
-  person: Person;
+  recipient: Recipient;
   userId: string;
 }
