@@ -20,7 +20,7 @@ import { FormsModule } from "@angular/forms";
     HttpClientModule,
     FormsModule,
     IonicModule.forRoot(),
-    IonicStorageModule.forRoot(),
+    IonicStorageModule.forRoot(/*{ name: "__giftlistdb", driverOrder: ["indexeddb", "sqlite", "websql"] }*/),
     ServiceWorkerModule.register("ngsw-worker.js", {
       enabled: environment.production
     })

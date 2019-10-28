@@ -8,14 +8,23 @@ const routes: Routes = [
     pathMatch: "full"
   },
   {
+    path: "gifts",
+    loadChildren: () =>
+      import("./pages/gift-list/gift-list.module").then(
+        m => m.GiftListPageModule
+      )
+  },
+  {
+    path: "persons",
+    loadChildren: () =>
+      import("./pages/person-list/person-list.module").then(
+        m => m.PersonListPageModule
+      )
+  },
+  {
     path: "account",
     loadChildren: () =>
       import("./pages/account/account.module").then(m => m.AccountModule)
-  },
-  {
-    path: "support",
-    loadChildren: () =>
-      import("./pages/support/support.module").then(m => m.SupportModule)
   },
   {
     path: "login",
@@ -31,41 +40,6 @@ const routes: Routes = [
     path: "app",
     loadChildren: () =>
       import("./pages/tabs-page/tabs-page.module").then(m => m.TabsModule)
-  },
-  {
-    path: "gift-list",
-    loadChildren: () =>
-      import("./pages/gift-list/gift-list.module").then(
-        m => m.GiftListPageModule
-      )
-  },
-  {
-    path: "gift-details",
-    loadChildren: () =>
-      import("./pages/gift-details/gift-details.module").then(
-        m => m.GiftDetailsPageModule
-      )
-  },
-  {
-    path: "gift-edit",
-    loadChildren: () =>
-      import("./pages/gift-edit/gift-edit.module").then(
-        m => m.GiftEditPageModule
-      )
-  },
-  {
-    path: "person-list",
-    loadChildren: () =>
-      import("./pages/person-list/person-list.module").then(
-        m => m.PersonListPageModule
-      )
-  },
-  {
-    path: "person-details",
-    loadChildren: () =>
-      import("./pages/person-details/person-details.module").then(
-        m => m.PersonDetailsPageModule
-      )
   }
 ];
 

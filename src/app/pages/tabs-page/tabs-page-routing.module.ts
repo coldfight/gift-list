@@ -9,6 +9,37 @@ const routes: Routes = [
     component: TabsPage,
     children: [
       {
+        path: "gifts",
+        children: [
+          {
+            path: "",
+            loadChildren: () =>
+              import("../gift-list/gift-list.module").then(
+                m => m.GiftListPageModule
+              )
+          },
+          {
+            path: "new",
+            loadChildren: () =>
+              import("../gift-new/gift-new.module").then(
+                m => m.GiftNewPageModule
+              )
+          }
+        ]
+      },
+      {
+        path: "persons",
+        children: [
+          {
+            path: "",
+            loadChildren: () =>
+              import("../person-list/person-list.module").then(
+                m => m.PersonListPageModule
+              )
+          }
+        ]
+      },
+      {
         path: "schedule",
         children: [
           {

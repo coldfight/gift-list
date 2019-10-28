@@ -25,9 +25,20 @@ import { UserData } from "./providers/user-data";
 export class AppComponent implements OnInit {
   appPages = [
     {
+      title: "Gift List",
+      url: "/app/tabs/gifts",
+      icon: "gift"
+    },
+    {
+      title: "People",
+      url: "/app/tabs/persons",
+      icon: "people"
+    },
+    // @todo: Delete these items...
+    {
       title: "Schedule",
       url: "/app/tabs/schedule",
-      icon: "calendar"
+      icon: "clock"
     },
     {
       title: "Speakers",
