@@ -19,10 +19,11 @@ import { RecipientService } from "../../services/recipient.service";
   styleUrls: ["./gift-new.page.scss"]
 })
 export class GiftNewPage implements OnInit, OnDestroy {
-  // Should be sent from the Recipient detail component's "Add Gift" button.
-  @Input() recipient: Recipient;
+  newRecipient: Recipient;
+
   recipients: Recipient[];
-  private recipientsSubscription: Subscription;
+  private _recipientsSubscription: Subscription;
+  private _newRecipientSubscription: Subscription;
 
   form: FormGroup;
 
@@ -39,22 +40,33 @@ export class GiftNewPage implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit() {
-    this.recipientsSubscription = this._recipientService.recipients.subscribe(
+    this._recipientsSubscription = this._recipientService.recipients.subscribe(
       (recipients: Recipient[]) => {
         this.recipients = recipients;
+        console.log("Getting [RECIPIENTS] from [GIFT NEW]: ", this.recipients);
+      }
+    );
+
+    this._newRecipientSubscription = this._recipientService.newRecipient.subscribe(
+      (recipient: Recipient) => {
+        this.form.patchValue({ recipient });
       }
     );
 
     this.form = this.formBuilder.group({
       name: new FormControl("", Validators.required),
       price: new FormControl("", Validators.compose([Validators.min(0)])),
-      recipient: new FormControl(this.recipient ? this.recipient : null)
+      recipient: new FormControl(null)
     });
   }
 
   ngOnDestroy() {
-    if (this.recipientsSubscription) {
-      this.recipientsSubscription.unsubscribe();
+    if (this._recipientsSubscription) {
+      this._recipientsSubscription.unsubscribe();
+    }
+
+    if (this._newRecipientSubscription) {
+      this._newRecipientSubscription.unsubscribe();
     }
   }
 
@@ -72,7 +84,7 @@ export class GiftNewPage implements OnInit, OnDestroy {
     // @todo: automatically set it as the form's recipient field.
 
     // @todo: edit this to /recipients/new and we navigate with this so we can navigate back to our form without losing entered data.
-    this._navController.navigateForward("/app/tabs/recipients");
+    this._navController.navigateForward("/app/tabs/gifts/new/recipients/new");
   }
 
   searchRecipients(event: {

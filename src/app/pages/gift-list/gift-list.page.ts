@@ -9,7 +9,7 @@ import { Subscription } from "rxjs";
   styleUrls: ["./gift-list.page.scss"]
 })
 export class GiftListPage implements OnInit, OnDestroy {
-  private giftsSubscription: Subscription;
+  private _giftsSubscription: Subscription;
   gifts: Gift[];
   loading = false;
 
@@ -17,17 +17,19 @@ export class GiftListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = true;
-    this.giftsSubscription = this._giftService.gifts.subscribe(
+    this._giftsSubscription = this._giftService.gifts.subscribe(
       (gifts: Gift[]) => {
         this.gifts = gifts;
         this.loading = false;
+
+        console.log("Getting [GIFTS] from [GIFT LIST]: ", this.gifts);
       }
     );
   }
 
   ngOnDestroy() {
-    if (this.giftsSubscription) {
-      this.giftsSubscription.unsubscribe();
+    if (this._giftsSubscription) {
+      this._giftsSubscription.unsubscribe();
     }
   }
 

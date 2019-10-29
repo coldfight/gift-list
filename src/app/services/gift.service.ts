@@ -77,7 +77,6 @@ export class GiftService {
   // @todo: Temporary
   async setGiftFixtures() {
     const recipients: Recipient[] = await this.storage.get("recipients");
-    console.log(recipients);
 
     const gifts: Gift[] = [
       {

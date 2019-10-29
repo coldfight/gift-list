@@ -20,10 +20,22 @@ const routes: Routes = [
           },
           {
             path: "new",
-            loadChildren: () =>
-              import("../gift-new/gift-new.module").then(
-                m => m.GiftNewPageModule
-              )
+            children: [
+              {
+                path: "",
+                loadChildren: () =>
+                  import("../gift-new/gift-new.module").then(
+                    m => m.GiftNewPageModule
+                  )
+              },
+              {
+                path: "recipients/new",
+                loadChildren: () =>
+                  import("../recipient-new/recipient-new.module").then(
+                    m => m.RecipientNewPageModule
+                  )
+              }
+            ]
           }
         ]
       },
@@ -35,6 +47,13 @@ const routes: Routes = [
             loadChildren: () =>
               import("../recipient-list/recipient-list.module").then(
                 m => m.RecipientListPageModule
+              )
+          },
+          {
+            path: "new",
+            loadChildren: () =>
+              import("../recipient-new/recipient-new.module").then(
+                m => m.RecipientNewPageModule
               )
           }
         ]
