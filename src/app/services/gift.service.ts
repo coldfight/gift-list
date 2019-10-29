@@ -15,16 +15,18 @@ export class GiftService {
     return this._gifts.asObservable();
   }
 
+  constructor(private storage: Storage) {}
+
   fetchGifts() {
     return from(this.storage.get("gifts")).pipe(
       take(1),
-      switchMap(gifts => {
+      switchMap((gifts: Gift[]) => {
         if (!gifts) {
           return this.storage.set("gifts", []);
         }
         return of(gifts);
       }),
-      tap(gifts => {
+      tap((gifts: Gift[]) => {
         this._gifts.next(gifts);
       })
     );
@@ -82,7 +84,9 @@ export class GiftService {
         id: Math.floor(Math.random() * 10000000).toString(),
         name: "iPhone Case",
         price: 39.99,
-        recipient: recipients.filter((r: Recipient) => r.name === "Brother In Law")[0],
+        recipient: recipients.filter(
+          (r: Recipient) => r.name === "Brother In Law"
+        )[0],
         bought: false,
         userId: "abc"
       },
@@ -98,7 +102,9 @@ export class GiftService {
         id: Math.floor(Math.random() * 10000000).toString(),
         name: "Fitbit Versa 2",
         price: 249.99,
-        recipient: recipients.filter((r: Recipient) => r.name === "Girlfriend")[0],
+        recipient: recipients.filter(
+          (r: Recipient) => r.name === "Girlfriend"
+        )[0],
         bought: false,
         userId: "abc"
       },
@@ -126,6 +132,4 @@ export class GiftService {
       })
       .catch(err => {});
   }
-
-  constructor(private storage: Storage) {}
 }

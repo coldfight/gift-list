@@ -33,7 +33,7 @@ export class GiftListPage implements OnInit, OnDestroy {
 
   ionViewWillEnter() {
     this.loading = true;
-    const sub = this._giftService.fetchGifts().subscribe();
+    this._giftService.fetchGifts().subscribe();
   }
 
   onEdit(id: string) {}

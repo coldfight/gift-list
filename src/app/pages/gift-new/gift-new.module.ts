@@ -2,6 +2,7 @@ import { NgModule } from "@angular/core";
 import { CommonModule } from "@angular/common";
 import { ReactiveFormsModule, FormsModule } from "@angular/forms";
 import { Routes, RouterModule } from "@angular/router";
+import { IonicSelectableModule } from "ionic-selectable";
 
 import { IonicModule } from "@ionic/angular";
 
@@ -20,7 +21,8 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    IonicSelectableModule
   ],
   declarations: [GiftNewPage]
 })

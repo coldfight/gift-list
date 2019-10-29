@@ -6,6 +6,7 @@ import { SplashScreen } from "@ionic-native/splash-screen/ngx";
 import { StatusBar } from "@ionic-native/status-bar/ngx";
 import { IonicModule } from "@ionic/angular";
 import { IonicStorageModule } from "@ionic/storage";
+import { IonicSelectableModule } from "ionic-selectable";
 
 import { AppRoutingModule } from "./app-routing.module";
 import { AppComponent } from "./app.component";
@@ -23,7 +24,8 @@ import { FormsModule } from "@angular/forms";
     IonicStorageModule.forRoot(/*{ name: "__giftlistdb", driverOrder: ["indexeddb", "sqlite", "websql"] }*/),
     ServiceWorkerModule.register("ngsw-worker.js", {
       enabled: environment.production
-    })
+    }),
+    IonicSelectableModule
   ],
   declarations: [AppComponent],
   providers: [InAppBrowser, SplashScreen, StatusBar],
