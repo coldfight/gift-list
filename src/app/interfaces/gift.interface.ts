@@ -5,6 +5,7 @@ export interface Gift {
   name: string;
   price: number;
   bought?: boolean;
-  recipient: Recipient;
-  userId: string;
+  recipientId?: string;
+  recipient?: Recipient; // @todo: no....
+  userId?: string;
 }

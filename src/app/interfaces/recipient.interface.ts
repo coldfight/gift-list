@@ -4,6 +4,6 @@ export interface Recipient {
   id: string;
   name: string;
   spendLimit?: number;
-  gifts: Gift[];
   finished?: boolean;
+  gifts?: Gift[];
 }

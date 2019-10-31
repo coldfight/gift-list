@@ -1,16 +1,21 @@
 import { Storage } from "@ionic/storage";
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable, from, of, Subject } from "rxjs";
+import { Observable, from, of, Subject } from "rxjs";
 import { Recipient } from "../interfaces/recipient.interface";
-import { take, switchMap, tap } from "rxjs/operators";
+import { take, switchMap, tap, map } from "rxjs/operators";
+
+interface RecipientResponseData {
+  name: string;
+  spendLimit: number;
+  finished: boolean;
+}
 
 @Injectable({
   providedIn: "root"
 })
 export class RecipientService {
-  private _recipients: BehaviorSubject<Recipient[]> = new BehaviorSubject<
-    Recipient[]
-  >([]);
+  private _recipients: Subject<Recipient[]> = new Subject<Recipient[]>();
   private _newRecipient: Subject<Recipient> = new Subject();
 
   get recipients(): Observable<Recipient[]> {
@@ -21,21 +26,33 @@ export class RecipientService {
     return this._newRecipient.asObservable();
   }
 
-  constructor(private storage: Storage) {}
+  constructor(private storage: Storage, private _http: HttpClient) {}
 
   fetchRecipients() {
-    return from(this.storage.get("recipients")).pipe(
-      take(1),
-      switchMap((recipients: Recipient[]) => {
-        if (!recipients) {
-          return this.storage.set("recipients", []);
-        }
-        return of(recipients);
-      }),
-      tap((recipients: Recipient[]) => {
-        this._recipients.next(recipients);
-      })
-    );
+    return this._http
+      .get<{ [key: string]: RecipientResponseData }>(
+        `https://test-playground-646de.firebaseio.com/recipients.json`
+      )
+      .pipe(
+        take(1),
+        map(responseData => {
+          const recipients: Recipient[] = [];
+          for (const key in responseData) {
+            if (responseData.hasOwnProperty(key)) {
+              recipients.push({
+                id: key,
+                name: responseData[key].name,
+                spendLimit: responseData[key].spendLimit,
+                finished: responseData[key].finished
+              });
+            }
+          }
+          return recipients;
+        }),
+        tap((recipients: Recipient[]) => {
+          this._recipients.next(recipients);
+        })
+      );
   }
 
   addRecipient(name: string, spendLimit: number) {

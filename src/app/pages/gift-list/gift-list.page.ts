@@ -10,6 +10,7 @@ import { Subscription } from "rxjs";
 })
 export class GiftListPage implements OnInit, OnDestroy {
   private _giftsSubscription: Subscription;
+
   gifts: Gift[];
   loading = false;
 
