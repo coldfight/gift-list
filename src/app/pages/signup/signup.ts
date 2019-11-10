@@ -1,33 +1,55 @@
-import { Component, ViewEncapsulation } from '@angular/core';
-import { NgForm } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Component, ViewEncapsulation, OnInit } from "@angular/core";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
+import { Router } from "@angular/router";
 
-import { UserData } from '../../providers/user-data';
-
-import { UserOptions } from '../../interfaces/user-options';
-
-
+import { UserData } from "../../providers/user-data";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
-  selector: 'page-signup',
-  templateUrl: 'signup.html',
-  styleUrls: ['./signup.scss'],
+  selector: "page-signup",
+  templateUrl: "signup.html",
+  styleUrls: ["./signup.scss"]
 })
-export class SignupPage {
-  signup: UserOptions = { username: '', password: '' };
+export class SignupPage implements OnInit {
   submitted = false;
+  loading = false;
+  form: FormGroup;
+  serverErrors = null;
 
-  constructor(
-    public router: Router,
-    public userData: UserData
-  ) {}
+  constructor(public router: Router, public userData: UserData) {}
 
-  onSignup(form: NgForm) {
+  ngOnInit() {
+    this.form = new FormGroup({
+      username: new FormControl(null, {
+        validators: [Validators.required]
+      }),
+      password: new FormControl(null, {
+        validators: [Validators.required]
+      })
+    });
+  }
+
+  onSignup() {
+    this.serverErrors = [];
+    this.loading = true;
     this.submitted = true;
-
-    if (form.valid) {
-      this.userData.signup(this.signup.username);
-      this.router.navigateByUrl('/app/tabs/schedule');
+    if (this.form.invalid) {
+      this.loading = false;
+      return;
     }
+
+    this.userData
+      .signup(this.form.get("username").value, this.form.get("password").value)
+      .subscribe(
+        result => {
+          this.router.navigateByUrl("/app/tabs/gifts");
+        },
+        (err: HttpErrorResponse) => {
+          this.loading = false;
+          if (err.error.data) {
+            this.serverErrors = err.error.data.map(e => e.msg);
+          }
+        }
+      );
   }
 }

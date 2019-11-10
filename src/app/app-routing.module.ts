@@ -1,5 +1,6 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
+import { AuthGuard } from "./services/auth.guard";
 
 const routes: Routes = [
   {
@@ -8,23 +9,10 @@ const routes: Routes = [
     pathMatch: "full"
   },
   {
-    path: "gifts",
-    loadChildren: () =>
-      import("./pages/gift-list/gift-list.module").then(
-        m => m.GiftListPageModule
-      )
-  },
-  {
-    path: "recipients",
-    loadChildren: () =>
-      import("./pages/recipient-list/recipient-list.module").then(
-        m => m.RecipientListPageModule
-      )
-  },
-  {
     path: "account",
     loadChildren: () =>
-      import("./pages/account/account.module").then(m => m.AccountModule)
+      import("./pages/account/account.module").then(m => m.AccountModule),
+    canLoad: [AuthGuard]
   },
   {
     path: "login",
@@ -39,7 +27,8 @@ const routes: Routes = [
   {
     path: "app",
     loadChildren: () =>
-      import("./pages/tabs-page/tabs-page.module").then(m => m.TabsModule)
+      import("./pages/tabs-page/tabs-page.module").then(m => m.TabsModule),
+    canLoad: [AuthGuard]
   }
 ];
 

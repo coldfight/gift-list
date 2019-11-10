@@ -1,29 +1,54 @@
-import { Component, ViewEncapsulation } from "@angular/core";
-import { NgForm } from "@angular/forms";
+import { Component, OnInit } from "@angular/core";
+import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
 import { UserData } from "../../providers/user-data";
-
-import { UserOptions } from "../../interfaces/user-options";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "page-login",
   templateUrl: "login.html",
   styleUrls: ["./login.scss"]
 })
-export class LoginPage {
-  login: UserOptions = { username: "", password: "" };
+export class LoginPage implements OnInit {
   submitted = false;
+  loading = false;
+  form: FormGroup;
+  serverErrors = null;
 
   constructor(public userData: UserData, public router: Router) {}
 
-  onLogin(form: NgForm) {
-    this.submitted = true;
+  ngOnInit() {
+    this.form = new FormGroup({
+      username: new FormControl(null, {
+        validators: [Validators.required]
+      }),
+      password: new FormControl(null, {
+        validators: [Validators.required]
+      })
+    });
+  }
 
-    if (form.valid) {
-      this.userData.login(this.login.username);
-      this.router.navigateByUrl("/app/tabs/schedule");
+  onLogin() {
+    this.serverErrors = [];
+    this.loading = true;
+    this.submitted = true;
+    if (this.form.invalid) {
+      this.loading = false;
+      return;
     }
+
+    this.userData
+      .login(this.form.get("username").value, this.form.get("password").value)
+      .subscribe(
+        result => {
+          this.router.navigateByUrl("/app/tabs/gifts");
+        },
+        (err: HttpErrorResponse) => {
+          this.loading = false;
+          this.serverErrors = [err.error.message];
+        }
+      );
   }
 
   onSignup() {

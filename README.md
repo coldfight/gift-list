@@ -61,3 +61,4 @@ All app preview screenshots were taken by running `ionic serve --lab` on a retin
 
 Useful links:
 https://github.com/eakoriakin/ionic-selectable
+https://nehalist.io/angular-7-models/

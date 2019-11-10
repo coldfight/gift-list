@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from "@angular/core";
+import { Component, OnInit, ViewEncapsulation, OnDestroy } from "@angular/core";
 import { Router } from "@angular/router";
 import { SwUpdate } from "@angular/service-worker";
 
@@ -13,8 +13,11 @@ import { SplashScreen } from "@ionic-native/splash-screen/ngx";
 import { StatusBar } from "@ionic-native/status-bar/ngx";
 
 import { Storage } from "@ionic/storage";
+import { Subscription } from "rxjs";
 
 import { UserData } from "./providers/user-data";
+import { AuthType } from "./enums/auth-type.enum";
+import { take } from "rxjs/operators";
 
 @Component({
   selector: "app-root",
@@ -22,7 +25,8 @@ import { UserData } from "./providers/user-data";
   styleUrls: ["./app.component.scss"],
   encapsulation: ViewEncapsulation.None
 })
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, OnDestroy {
+  private _authTypeSubscription: Subscription;
   appPages = [
     {
       title: "Gift List",
@@ -65,7 +69,15 @@ export class AppComponent implements OnInit {
   }
 
   async ngOnInit() {
-    this.checkLoginStatus();
+    this.userData
+      .autoLogin()
+      .pipe(take(1))
+      .subscribe();
+
+    this.userData.isAuthenticated().subscribe(isAuthenticated => {
+      return this.updateLoggedInStatus(isAuthenticated);
+    });
+
     this.listenForLoginEvents();
 
     this.swUpdate.available.subscribe(async res => {
@@ -85,6 +97,12 @@ export class AppComponent implements OnInit {
     });
   }
 
+  ngOnDestroy() {
+    if (this._authTypeSubscription) {
+      this._authTypeSubscription.unsubscribe();
+    }
+  }
+
   initializeApp() {
     this.platform.ready().then(() => {
       this.statusBar.styleDefault();
@@ -92,34 +110,30 @@ export class AppComponent implements OnInit {
     });
   }
 
-  checkLoginStatus() {
-    return this.userData.isLoggedIn().then(loggedIn => {
-      return this.updateLoggedInStatus(loggedIn);
-    });
-  }
-
   updateLoggedInStatus(loggedIn: boolean) {
-    setTimeout(() => {
-      this.loggedIn = loggedIn;
-    }, 300);
+    this.loggedIn = loggedIn;
   }
 
   listenForLoginEvents() {
-    this.events.subscribe("user:login", () => {
-      this.updateLoggedInStatus(true);
-    });
-
-    this.events.subscribe("user:signup", () => {
-      this.updateLoggedInStatus(true);
-    });
-
-    this.events.subscribe("user:logout", () => {
-      this.updateLoggedInStatus(false);
-    });
+    this._authTypeSubscription = this.userData.authType.subscribe(
+      (authType: AuthType) => {
+        switch (authType) {
+          case AuthType.UserLogin:
+            this.updateLoggedInStatus(true);
+            break;
+          case AuthType.UserSignup:
+            this.updateLoggedInStatus(true);
+            break;
+          case AuthType.UserLogout:
+            this.updateLoggedInStatus(false);
+            break;
+        }
+      }
+    );
   }
 
   logout() {
-    this.userData.logout().then(() => {
+    this.userData.logout().subscribe(() => {
       return this.router.navigateByUrl("/app/tabs/schedule");
     });
   }
