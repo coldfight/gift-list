@@ -30,12 +30,12 @@ export class RecipientNewPage implements OnInit {
   }
 
   onSubmit(data) {
-    // once we submit this form, we might need to redirect back to the gift page
-    this._recipientService
-      .addRecipient(data.name, data.spendLimit)
-      .subscribe(() => {
-        this._navController.pop();
-        this.form.reset();
-      });
+    // // once we submit this form, we might need to redirect back to the gift page
+    // this._recipientService
+    //   .addRecipient(data.name, data.spendLimit)
+    //   .subscribe(() => {
+    //     this._navController.pop();
+    //     this.form.reset();
+    //   });
   }
 }

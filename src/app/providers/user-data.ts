@@ -93,6 +93,31 @@ export class UserData {
       );
   }
 
+  refreshToken() {
+    let loadedUser;
+    return this.user.pipe(
+      take(1),
+      switchMap((user: User) => {
+        loadedUser = user;
+        return this._http.post<AuthResponse>(
+          `${environment.apiUrl}/api/auth/token`,
+          {
+            username: user.username,
+            refreshToken: user.refreshToken
+          }
+        );
+      }),
+      take(1),
+      switchMap((response: AuthResponse) => {
+        loadedUser = { ...loadedUser, jwtToken: response.token };
+        return this.setUserData(loadedUser);
+      }),
+      tap(r => {
+        this._user.next(loadedUser);
+      })
+    );
+  }
+
   logout() {
     // @todo: I might want to clear my refresh token in the API
     return this.removeUserData().pipe(

@@ -34,12 +34,7 @@ export class GiftService {
       switchMap((user: User) => {
         console.log("1. switchMap: ", { user });
         return this._http.get<GiftResponseData[]>(
-          `${environment.apiUrl}/api/gifts`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.jwtToken}`
-            }
-          }
+          `${environment.apiUrl}/api/gifts`
         );
       }),
       map((responseData: GiftResponseData[]) => {
