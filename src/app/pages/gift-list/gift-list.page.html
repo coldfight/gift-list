@@ -13,7 +13,7 @@
       <ion-item routerLink="/">
         <ion-label>
           <h3>{{ gift.name }}</h3>
-          <p>{{ gift.recipientId }}</p>
+          <p>{{ gift.recipient ? gift.recipient.name : "N/A" }}</p>
         </ion-label>
       </ion-item>
       <ion-item-options side="end">

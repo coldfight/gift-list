@@ -3,53 +3,101 @@ import { BehaviorSubject, Observable, of, from, Subject } from "rxjs";
 import { tap, take, switchMap, map } from "rxjs/operators";
 import { HttpClient } from "@angular/common/http";
 
-import { Gift } from "../interfaces/gift.interface";
+import { Gift, GiftResponseData } from "../interfaces/gift.interface";
 import { Recipient } from "../interfaces/recipient.interface";
-
-interface GiftResponseData {
-  name: string;
-  bought: boolean;
-  price: number;
-  recipientId: string;
-}
+import { environment } from "../../environments/environment";
+import { UserData } from "../providers/user-data";
+import { User } from "../interfaces/user.interface";
+import { RecipientService } from "./recipient.service";
 
 @Injectable({
   providedIn: "root"
 })
 export class GiftService {
-  private _gifts: Subject<Gift[]> = new Subject<Gift[]>();
+  private _gifts: BehaviorSubject<Gift[]> = new BehaviorSubject<Gift[]>([]);
 
   get gifts(): Observable<Gift[]> {
     return this._gifts.asObservable();
   }
 
-  constructor(private _http: HttpClient) {}
+  constructor(
+    private _http: HttpClient,
+    private _userData: UserData,
+    private _recipientService: RecipientService
+  ) {}
 
   fetchGifts(): Observable<Gift[]> {
-    return this._http
-      .get<{ [key: string]: GiftResponseData }>(
-        `https://test-playground-646de.firebaseio.com/gifts.json`
-      )
-      .pipe(
-        take(1),
-        map(responseData => {
-          const gifts: Gift[] = [];
-          for (const key in responseData) {
-            if (responseData.hasOwnProperty(key)) {
-              gifts.push({
-                id: key,
-                name: responseData[key].name,
-                price: responseData[key].price,
-                bought: responseData[key].bought,
-                recipientId: responseData[key].recipientId
-              });
+    let loadedGifts: Gift[];
+
+    return this._userData.user.pipe(
+      take(1),
+      switchMap((user: User) => {
+        console.log("1. switchMap: ", { user });
+        return this._http.get<GiftResponseData[]>(
+          `${environment.apiUrl}/api/gifts`,
+          {
+            headers: {
+              Authorization: `Bearer ${user.jwtToken}`
             }
           }
-          return gifts;
-        }),
-        tap((gifts: Gift[]) => {
-          this._gifts.next(gifts);
-        })
-      );
+        );
+      }),
+      map((responseData: GiftResponseData[]) => {
+        console.log("2. map: ", { responseData });
+
+        if (!responseData || responseData.length === 0) {
+          return [];
+        }
+
+        const gifts: Gift[] = responseData.map(g => {
+          return {
+            id: g.id,
+            name: g.name,
+            price: g.price,
+            bought: g.bought,
+            createdAt: new Date(g.createdAt),
+            updatedAt: new Date(g.updatedAt),
+            recipientId: g.recipientId,
+            userId: g.userId
+          };
+        });
+        return gifts;
+      }),
+      switchMap((gifts: Gift[]) => {
+        console.log("3. switchMap: ", { gifts });
+        loadedGifts = gifts;
+        return this._recipientService.recipients;
+      }),
+      take(1),
+      switchMap(recipients => {
+        console.log("4. switchMap: ", { recipients });
+        if (!recipients || recipients.length === 0) {
+          return this._recipientService.fetchRecipients();
+        }
+
+        return of(recipients);
+      }),
+      take(1),
+      switchMap(recipients => {
+        console.log("5. switchMap: ", { recipients });
+
+        // convert recipients array to a map
+        const recipientMap = {};
+        recipients.forEach(r => (recipientMap[r.id] = r));
+
+        // Assign a recipient to each gift
+        loadedGifts = loadedGifts.map(g => {
+          return {
+            ...g,
+            recipient: recipientMap[g.recipientId]
+          };
+        });
+        return of(loadedGifts);
+      }),
+      tap((gifts: Gift[]) => {
+        console.log("6. tap: ", { gifts });
+        this._gifts.next(gifts);
+      })
+    );
   }
 }

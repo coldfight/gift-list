@@ -1,11 +1,24 @@
 import { Recipient } from "./recipient.interface";
 
 export interface Gift {
-  id: string;
+  id: number;
   name: string;
   price: number;
-  bought?: boolean;
-  recipientId?: string;
-  recipient?: Recipient; // @todo: no....
-  userId?: string;
+  bought: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+  recipientId: number;
+  userId: number;
+  recipient?: number;
+}
+
+export interface GiftResponseData {
+  id: number;
+  name: string;
+  price: number;
+  bought: boolean;
+  createdAt: string;
+  updatedAt: string;
+  recipientId: number;
+  userId: number;
 }

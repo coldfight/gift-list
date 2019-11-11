@@ -6,13 +6,7 @@ import { environment } from "../../environments/environment";
 import { take, tap, switchMap, map } from "rxjs/operators";
 import { AuthResponse } from "../interfaces/auth-response.interface";
 import { AuthType } from "../enums/auth-type.enum";
-
-interface User {
-  username: string;
-  jwtToken: string;
-  refreshToken?: string;
-  loggedIn: boolean;
-}
+import { User } from "../interfaces/user.interface";
 
 @Injectable({
   providedIn: "root"
