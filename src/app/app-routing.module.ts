@@ -1,12 +1,12 @@
 import { NgModule } from "@angular/core";
 import { RouterModule, Routes } from "@angular/router";
 import { AuthGuard } from "./services/auth.guard";
+import { SplashScreenPage } from "./pages/splash-screen/splash-screen.page";
 
 const routes: Routes = [
   {
     path: "",
-    redirectTo: "/app/tabs/schedule",
-    pathMatch: "full"
+    component: SplashScreenPage
   },
   {
     path: "account",
@@ -29,6 +29,11 @@ const routes: Routes = [
     loadChildren: () =>
       import("./pages/tabs-page/tabs-page.module").then(m => m.TabsModule),
     canLoad: [AuthGuard]
+  },
+  {
+    path: "splash-screen",
+    loadChildren:
+      "./pages/splash-screen/splash-screen.module#SplashScreenPageModule"
   }
 ];
 

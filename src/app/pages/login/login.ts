@@ -30,6 +30,7 @@ export class LoginPage implements OnInit {
   }
 
   onLogin() {
+    // @todo: Fix errors on this page.
     this.serverErrors = [];
     this.loading = true;
     this.submitted = true;
@@ -42,6 +43,8 @@ export class LoginPage implements OnInit {
       .login(this.form.get("username").value, this.form.get("password").value)
       .subscribe(
         result => {
+          this.loading = false;
+          this.form.reset();
           this.router.navigateByUrl("/app/tabs/gifts");
         },
         (err: HttpErrorResponse) => {

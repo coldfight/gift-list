@@ -14,6 +14,7 @@ import { ServiceWorkerModule } from "@angular/service-worker";
 import { environment } from "../environments/environment";
 import { FormsModule } from "@angular/forms";
 import { AuthInterceptor } from "./interceptors/auth.interceptor";
+import { SplashScreenPage } from "./pages/splash-screen/splash-screen.page";
 
 @NgModule({
   imports: [
@@ -28,7 +29,7 @@ import { AuthInterceptor } from "./interceptors/auth.interceptor";
     }),
     IonicSelectableModule
   ],
-  declarations: [AppComponent],
+  declarations: [AppComponent, SplashScreenPage],
   providers: [
     InAppBrowser,
     SplashScreen,

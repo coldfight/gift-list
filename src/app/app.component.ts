@@ -37,17 +37,6 @@ export class AppComponent implements OnInit, OnDestroy {
       title: "Recipients",
       url: "/app/tabs/recipients",
       icon: "people"
-    },
-    // @todo: Delete these items...
-    {
-      title: "Schedule",
-      url: "/app/tabs/schedule",
-      icon: "clock"
-    },
-    {
-      title: "Speakers",
-      url: "/app/tabs/speakers",
-      icon: "contacts"
     }
   ];
   loggedIn = false;
@@ -134,7 +123,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   logout() {
     this.userData.logout().subscribe(() => {
-      return this.router.navigateByUrl("/app/tabs/schedule");
+      return this.router.navigateByUrl("/login");
     });
   }
 }
