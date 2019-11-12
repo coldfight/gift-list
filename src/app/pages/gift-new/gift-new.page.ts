@@ -12,6 +12,7 @@ import { Subscription } from "rxjs";
 import { GiftService } from "../../services/gift.service";
 import { Recipient } from "../../interfaces/recipient.interface";
 import { RecipientService } from "../../services/recipient.service";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "gift-new",
@@ -19,8 +20,9 @@ import { RecipientService } from "../../services/recipient.service";
   styleUrls: ["./gift-new.page.scss"]
 })
 export class GiftNewPage implements OnInit, OnDestroy {
+  loading = false;
+  errors: { [key: string]: string } = {};
   newRecipient: Recipient;
-
   recipients: Recipient[];
   private _recipientsSubscription: Subscription;
   private _newRecipientSubscription: Subscription;
@@ -49,14 +51,16 @@ export class GiftNewPage implements OnInit, OnDestroy {
 
     this._newRecipientSubscription = this._recipientService.newRecipient.subscribe(
       (recipient: Recipient) => {
-        this.form.patchValue({ recipient });
+        // recipientId is a misnomer. It's actually the Recipient but to keep
+        // it in sync with backend validation, I called it recipientId
+        this.form.patchValue({ recipientId: recipient });
       }
     );
 
     this.form = this.formBuilder.group({
       name: new FormControl("", Validators.required),
-      price: new FormControl("", Validators.compose([Validators.min(0)])),
-      recipient: new FormControl(null)
+      price: new FormControl(null, Validators.compose([Validators.min(0)])),
+      recipientId: new FormControl(null, Validators.required)
     });
   }
 
@@ -74,16 +78,48 @@ export class GiftNewPage implements OnInit, OnDestroy {
     this._recipientService.fetchRecipients().subscribe();
   }
 
-  onSubmit(data) {
-    console.log(data);
+  onSubmit() {
+    this.errors = {};
+    this.loading = true;
+    if (this.form.invalid) {
+      for (const key in this.form.value) {
+        if (this.form.value.hasOwnProperty(key)) {
+          if (this.form.get(key).invalid) {
+            if (this.form.get(key).errors["required"]) {
+              this.errors[key] = "This field is required.";
+            } else {
+              this.errors[key] = "Fix this field.";
+            }
+          }
+        }
+      }
+      this.loading = false;
+      return;
+    }
+
+    this._giftService
+      .addGift(
+        this.form.value["name"],
+        this.form.value["price"],
+        this.form.value["recipientId"]["id"]
+      )
+      .subscribe(
+        result => {
+          this.form.reset();
+          this._navController.navigateBack("/app/tabs/gifts");
+        },
+        (err: HttpErrorResponse) => {
+          if (err && err.error && err.error.data) {
+            for (const e of err.error.data) {
+              this.errors[e.param] = e.msg;
+            }
+          }
+          this.loading = false;
+        }
+      );
   }
 
   addNewRecipient() {
-    console.log("Add a new recipient");
-    // @todo: add a new recipient and then
-    // @todo: automatically set it as the form's recipient field.
-
-    // @todo: edit this to /recipients/new and we navigate with this so we can navigate back to our form without losing entered data.
     this._navController.navigateForward("/app/tabs/gifts/new/recipients/new");
   }
 

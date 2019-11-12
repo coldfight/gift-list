@@ -26,6 +26,17 @@ export class GiftService {
     private _recipientService: RecipientService
   ) {}
 
+  addGift(name: string, price: number, recipientId: number) {
+    return this._http
+      .post(`${environment.apiUrl}/api/gifts`, {
+        name,
+        price,
+        recipientId
+      })
+      .pipe(take(1));
+    // @todo: Update the list of gifts once we're done adding it.
+  }
+
   fetchGifts(): Observable<Gift[]> {
     let loadedGifts: Gift[];
 

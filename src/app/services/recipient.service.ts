@@ -70,6 +70,12 @@ export class RecipientService {
         name,
         spendLimit
       })
-      .pipe(take(1));
+      .pipe(
+        take(1),
+        tap((recipient: Recipient) => {
+          this._newRecipient.next(recipient);
+        })
+      );
+    // @todo: Update the list of recipients once we're done adding it.
   }
 }
