@@ -7,6 +7,7 @@ import {
   FormControl
 } from "@angular/forms";
 import { RecipientService } from "../../services/recipient.service";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "recipient-new",
@@ -15,6 +16,8 @@ import { RecipientService } from "../../services/recipient.service";
 })
 export class RecipientNewPage implements OnInit {
   form: FormGroup;
+  errors: { [key: string]: string } = {};
+  loading = false;
 
   constructor(
     public formBuilder: FormBuilder,
@@ -30,12 +33,22 @@ export class RecipientNewPage implements OnInit {
   }
 
   onSubmit(data) {
-    // // once we submit this form, we might need to redirect back to the gift page
-    // this._recipientService
-    //   .addRecipient(data.name, data.spendLimit)
-    //   .subscribe(() => {
-    //     this._navController.pop();
-    //     this.form.reset();
-    //   });
+    this.loading = true;
+    // once we submit this form, we might need to redirect back to the gift page
+    this._recipientService.addRecipient(data.name, data.spendLimit).subscribe(
+      () => {
+        this.loading = false;
+        this.form.reset();
+        this._navController.pop();
+      },
+      (err: HttpErrorResponse) => {
+        if (err && err.error && err.error.data) {
+          for (const e of err.error.data) {
+            this.errors[e.param] = e.msg;
+          }
+        }
+        this.loading = false;
+      }
+    );
   }
 }

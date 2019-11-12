@@ -4,7 +4,7 @@ export interface Recipient {
   id: number;
   name: string;
   spendLimit?: number;
-  finished?: boolean;
+  completed?: boolean;
   gifts?: Gift[];
 }
 
@@ -13,7 +13,7 @@ export interface RecipientResponseData {
   id: number;
   name: string;
   spendLimit?: number;
-  finished?: boolean;
+  completed?: boolean;
   gifts?: Gift[];
   userId: number;
 }

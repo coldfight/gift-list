@@ -39,12 +39,7 @@ export class RecipientService {
       take(1),
       switchMap((user: User) => {
         return this._http.get<RecipientResponseData[]>(
-          `${environment.apiUrl}/api/recipients`,
-          {
-            headers: {
-              Authorization: `Bearer ${user.jwtToken}`
-            }
-          }
+          `${environment.apiUrl}/api/recipients`
         );
       }),
       map((responseData: RecipientResponseData[]) => {
@@ -57,7 +52,7 @@ export class RecipientService {
             id: r.id,
             name: r.name,
             spendLimit: r.spendLimit,
-            finished: r.finished,
+            completed: r.completed,
             userId: r.userId
           };
         });
@@ -70,24 +65,11 @@ export class RecipientService {
   }
 
   addRecipient(name: string, spendLimit: number) {
-    // const recipient: Recipient = {
-    //   id: undefined,
-    //   name,
-    //   spendLimit,
-    //   gifts: []
-    // };
-
-    // return this.recipients.pipe(
-    //   take(1),
-    //   switchMap(recipients => {
-    //     recipients.push(recipient);
-    //     return from(this.storage.set("recipients", recipients));
-    //   }),
-    //   take(1),
-    //   tap(recipients => {
-    //     this._recipients.next(recipients);
-    //     this._newRecipient.next(recipient);
-    //   })
-    // );
+    return this._http
+      .post(`${environment.apiUrl}/api/recipients`, {
+        name,
+        spendLimit
+      })
+      .pipe(take(1));
   }
 }

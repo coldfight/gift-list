@@ -24,6 +24,11 @@
                     formControlName="name"
                   ></ion-input>
                 </ion-item>
+
+                <app-error-block
+                  *ngIf="errors['name']"
+                  [errorMessage]="errors['name']"
+                ></app-error-block>
               </ion-col>
             </ion-row>
 
@@ -46,9 +51,10 @@
                   class="submit-btn"
                   expand="full"
                   type="submit"
-                  [disabled]="!form.valid"
-                  >Add Recipient</ion-button
+                  [disabled]="!form.valid || loading"
                 >
+                  Add Recipient <ion-spinner *ngIf="loading"></ion-spinner>
+                </ion-button>
               </ion-col>
             </ion-row>
           </ion-grid>

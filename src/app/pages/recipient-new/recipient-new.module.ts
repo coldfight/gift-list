@@ -6,6 +6,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
 
 import { RecipientNewPage } from "./recipient-new.page";
+import { ErrorBlockComponent } from "../../components/error-block/error-block.component";
 
 const routes: Routes = [
   {
@@ -22,6 +23,6 @@ const routes: Routes = [
     IonicModule,
     RouterModule.forChild(routes)
   ],
-  declarations: [RecipientNewPage]
+  declarations: [RecipientNewPage, ErrorBlockComponent]
 })
 export class RecipientNewPageModule {}
