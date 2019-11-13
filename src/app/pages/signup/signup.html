@@ -25,34 +25,27 @@
         >
         </ion-input>
       </ion-item>
-      <ion-text color="danger">
-        <p
-          [hidden]="form.get('username').valid || submitted == false"
-          class="ion-padding-start"
-        >
-          Username is required
-        </p>
-      </ion-text>
+
+      <app-error-block
+        *ngIf="form.get('username').invalid && submitted === true"
+        errorMessage="Username is required"
+      ></app-error-block>
 
       <ion-item>
         <ion-label position="stacked" color="primary">Password</ion-label>
         <ion-input formControlName="password" name="password" type="password">
         </ion-input>
       </ion-item>
-      <ion-text color="danger">
-        <p
-          [hidden]="form.get('password').valid || submitted == false"
-          class="ion-padding-start"
-        >
-          Password is required
-        </p>
-      </ion-text>
 
-      <ion-text color="danger" *ngIf="serverErrors && serverErrors.length > 0">
-        <p class="ion-padding-start">
-          {{ serverErrors[0] }}
-        </p>
-      </ion-text>
+      <app-error-block
+        *ngIf="form.get('password').invalid && submitted === true"
+        errorMessage="Password is required"
+      ></app-error-block>
+
+      <app-error-block
+        *ngIf="serverErrors && serverErrors.length > 0"
+        [errorMessage]="serverErrors[0]"
+      ></app-error-block>
     </ion-list>
 
     <div class="ion-padding">

@@ -42,6 +42,9 @@ export class SignupPage implements OnInit {
       .signup(this.form.get("username").value, this.form.get("password").value)
       .subscribe(
         result => {
+          this.loading = false;
+          this.submitted = false;
+          this.form.reset();
           this.router.navigateByUrl("/app/tabs/gifts");
         },
         (err: HttpErrorResponse) => {
