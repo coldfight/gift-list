@@ -40,10 +40,8 @@ export class GiftListPage implements OnInit, OnDestroy {
 
   onEdit(id: string) {}
 
-  onDelete(id: string) {}
-
-  onAddGift() {
-    console.log("Open the form to add a new gift...");
+  onDelete(id: string) {
+    this._giftService.deleteGift(id).subscribe();
   }
 
   toggleBought(id: number) {

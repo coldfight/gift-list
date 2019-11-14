@@ -37,6 +37,24 @@ export class GiftService {
     // @todo: Update the list of gifts once we're done adding it.
   }
 
+  deleteGift(id: number) {
+    return this._http.delete(`${environment.apiUrl}/api/gifts/${id}`).pipe(
+      take(1),
+      switchMap(response => {
+        return this._gifts.pipe();
+      }),
+      take(1),
+      map((gifts: Gift[]) => {
+        return gifts.filter(g => {
+          return g.id !== id;
+        });
+      }),
+      tap((gifts: Gift[]) => {
+        this._gifts.next(gifts);
+      })
+    );
+  }
+
   updateGift(id: number, gift: Gift): Observable<Gift[]> {
     let updatedGift: Gift;
     return this._http
