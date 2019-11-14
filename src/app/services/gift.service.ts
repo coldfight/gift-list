@@ -37,6 +37,34 @@ export class GiftService {
     // @todo: Update the list of gifts once we're done adding it.
   }
 
+  updateGift(id: number, gift: Gift): Observable<Gift[]> {
+    let updatedGift: Gift;
+    return this._http
+      .patch(`${environment.apiUrl}/api/gifts/${id}`, { bought: gift.bought })
+      .pipe(
+        take(1),
+        switchMap((response: Gift) => {
+          updatedGift = response;
+          return this._gifts.pipe();
+        }),
+        take(1),
+        map((gifts: Gift[]) => {
+          const giftsCopy = gifts.map(g => {
+            if (g.id === id) {
+              // when finding the matched id, return the updatedGift instead of the original one.
+              return updatedGift;
+            }
+            return { ...g };
+          });
+
+          return giftsCopy;
+        }),
+        tap((gifts: Gift[]) => {
+          this._gifts.next(gifts);
+        })
+      );
+  }
+
   fetchGifts(): Observable<Gift[]> {
     let loadedGifts: Gift[];
 

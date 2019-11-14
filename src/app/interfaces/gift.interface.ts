@@ -9,7 +9,7 @@ export interface Gift {
   updatedAt: Date;
   recipientId: number;
   userId: number;
-  recipient?: number;
+  recipient?: Recipient;
 }
 
 export interface GiftResponseData {

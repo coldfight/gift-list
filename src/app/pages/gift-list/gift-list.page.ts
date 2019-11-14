@@ -20,10 +20,9 @@ export class GiftListPage implements OnInit, OnDestroy {
     this.loading = true;
     this._giftsSubscription = this._giftService.gifts.subscribe(
       (gifts: Gift[]) => {
+        gifts.map(g => console.log(g.bought));
         this.gifts = gifts;
         this.loading = false;
-
-        console.log("Getting [GIFTS] from [GIFT LIST]: ", this.gifts);
       }
     );
   }
@@ -45,5 +44,15 @@ export class GiftListPage implements OnInit, OnDestroy {
 
   onAddGift() {
     console.log("Open the form to add a new gift...");
+  }
+
+  toggleBought(id: number) {
+    const gift = this.gifts.find(g => g.id === id);
+    if (!gift) {
+      return;
+    }
+    this._giftService
+      .updateGift(id, { ...gift, bought: !gift.bought })
+      .subscribe();
   }
 }
