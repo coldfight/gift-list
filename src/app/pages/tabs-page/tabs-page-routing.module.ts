@@ -35,6 +35,13 @@ const routes: Routes = [
                   )
               }
             ]
+          },
+          {
+            path: "edit/:id",
+            loadChildren: () =>
+              import("../gift-edit/gift-edit.module").then(
+                m => m.GiftEditPageModule
+              )
           }
         ]
       },

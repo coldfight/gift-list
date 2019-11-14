@@ -27,19 +27,14 @@
         ></ion-icon>
       </ion-item>
       <ion-item-options side="end">
-        <ion-item-option color="danger">
-          <ion-icon
-            slot="icon-only"
-            name="trash"
-            (click)="onDelete(gift.id)"
-            expandable
-          ></ion-icon>
+        <ion-item-option color="danger" (click)="onDelete(gift.id)">
+          <ion-icon slot="icon-only" name="trash" expandable></ion-icon>
         </ion-item-option>
-        <ion-item-option>
+        <ion-item-option [routerLink]="'/app/tabs/gifts/edit/' + gift.id">
           <ion-icon
             slot="icon-only"
             name="create"
-            (click)="onEdit(gift.id)"
+            routerLink="/app/tabs/gifts/edit"
             expandable
           ></ion-icon>
         </ion-item-option>

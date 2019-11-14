@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import { Component, OnInit, OnDestroy } from "@angular/core";
 import {
   FormGroup,
   FormBuilder,
@@ -8,11 +8,11 @@ import {
 import { IonicSelectableComponent } from "ionic-selectable";
 import { NavController } from "@ionic/angular";
 import { Subscription } from "rxjs";
+import { HttpErrorResponse } from "@angular/common/http";
 
 import { GiftService } from "../../services/gift.service";
 import { Recipient } from "../../interfaces/recipient.interface";
 import { RecipientService } from "../../services/recipient.service";
-import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({
   selector: "gift-new",
@@ -105,6 +105,7 @@ export class GiftNewPage implements OnInit, OnDestroy {
       )
       .subscribe(
         result => {
+          this.loading = false;
           this.form.reset();
           this._navController.navigateBack("/app/tabs/gifts");
         },

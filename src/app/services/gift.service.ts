@@ -56,9 +56,14 @@ export class GiftService {
   }
 
   updateGift(id: number, gift: Gift): Observable<Gift[]> {
+    console.log('lets update the gift: ', gift)
     let updatedGift: Gift;
     return this._http
-      .patch(`${environment.apiUrl}/api/gifts/${id}`, { bought: gift.bought })
+      .patch(`${environment.apiUrl}/api/gifts/${id}`, {
+        name: gift.name,
+        price: gift.price,
+        bought: gift.bought
+      })
       .pipe(
         take(1),
         switchMap((response: Gift) => {
@@ -81,6 +86,68 @@ export class GiftService {
           this._gifts.next(gifts);
         })
       );
+  }
+
+  fetchGift(id: number): Observable<Gift> {
+    let loadedGift: Gift;
+    return this._userData.user.pipe(
+      take(1),
+      switchMap((user: User) => {
+        console.log("1. switchMap: ", { user });
+        return this._http.get<GiftResponseData>(
+          `${environment.apiUrl}/api/gifts/${id}`
+        );
+      }),
+      map((responseData: GiftResponseData) => {
+        console.log("2. map: ", { responseData });
+
+        if (!responseData) {
+          return;
+        }
+
+        const gift: Gift = {
+          id: responseData.id,
+          name: responseData.name,
+          price: responseData.price,
+          bought: responseData.bought,
+          createdAt: new Date(responseData.createdAt),
+          updatedAt: new Date(responseData.updatedAt),
+          recipientId: responseData.recipientId,
+          userId: responseData.userId
+        };
+        loadedGift = gift;
+      }),
+      switchMap(() => {
+        console.log("3. switchMap: ");
+        return this._recipientService.recipients;
+      }),
+      take(1),
+      switchMap(recipients => {
+        console.log("4. switchMap: ", { recipients });
+        if (!recipients || recipients.length === 0) {
+          return this._recipientService.fetchRecipients();
+        }
+
+        return of(recipients);
+      }),
+      take(1),
+      switchMap(recipients => {
+        // convert recipients array to a map
+        const recipientMap = {};
+        recipients.forEach(r => (recipientMap[r.id] = r));
+
+        if (!loadedGift) {
+          return of(null);
+        }
+
+        // Assign a recipient to each gift
+        loadedGift = {
+          ...loadedGift,
+          recipient: recipientMap[loadedGift.recipientId]
+        };
+        return of(loadedGift);
+      })
+    );
   }
 
   fetchGifts(): Observable<Gift[]> {
