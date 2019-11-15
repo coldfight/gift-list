@@ -38,15 +38,29 @@ export class AuthInterceptor implements HttpInterceptor {
         }
         return next.handle(request);
       }),
+      map((event: HttpEvent<any>) => {
+        return event;
+      }),
       catchError((error: HttpErrorResponse) => {
         if (
-          (["POST", "DELETE"].indexOf(request.method) >= 0 &&
+          (["POST"].indexOf(request.method) >= 0 &&
             request.url.includes("/auth/token")) ||
           request.url.includes("/login")
         ) {
           if (request.url.includes("/auth/token")) {
-            this._userData.logout();
+            this._userData.logout().subscribe(() => {
+              this._router.navigateByUrl("/login");
+            });
           }
+          return throwError(error);
+        } else if (
+          ["DELETE"].indexOf(request.method) >= 0 &&
+          request.url.includes("/auth/token")
+        ) {
+          this._userData.logout(false).subscribe(() => {
+            console.log("HERE")
+            this._router.navigateByUrl("/login");
+          });
           return throwError(error);
         }
 
@@ -65,6 +79,12 @@ export class AuthInterceptor implements HttpInterceptor {
               }
             });
             return next.handle(request);
+          }),
+          catchError((err: HttpErrorResponse) => {
+            this._userData.logout().subscribe(() => {
+              this._router.navigateByUrl("/login");
+            });
+            return throwError(err);
           })
         );
       })

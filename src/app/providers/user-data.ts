@@ -1,6 +1,6 @@
 import { Injectable } from "@angular/core";
 import { Storage } from "@ionic/storage";
-import { Subject, from, Observable, BehaviorSubject } from "rxjs";
+import { Subject, from, Observable, BehaviorSubject, of } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { environment } from "../../environments/environment";
 import { take, tap, switchMap, map } from "rxjs/operators";
@@ -118,9 +118,20 @@ export class UserData {
     );
   }
 
-  logout() {
-    // @todo: I might want to clear my refresh token in the API
-    return this.removeUserData().pipe(
+  logout(deleteToken: boolean = true) {
+    return this.user.pipe(
+      take(1),
+      switchMap((user: User) => {
+        if (deleteToken) {
+          return this._http.delete(
+            `${environment.apiUrl}/api/auth/token/${user.refreshToken}`
+          );
+        }
+        return of(null);
+      }),
+      switchMap(() => {
+        return this.removeUserData();
+      }),
       take(1),
       tap(() => {
         this._authType.next(AuthType.UserLogout);
