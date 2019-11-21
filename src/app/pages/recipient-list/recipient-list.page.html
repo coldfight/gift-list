@@ -12,8 +12,16 @@
     <ion-item-sliding *ngFor="let recipient of recipients">
       <ion-item routerLink="/">
         <ion-label>
-          <h3>{{ recipient.name }}</h3>
-          <p>Gifts to buy: #</p>
+          <h2><strong>{{ recipient.name }}</strong></h2>
+          <p>
+            <small slot="start">
+              <strong
+                >Gifts to buy: {{ recipient.gifts ? (recipient.gifts |
+                boughtGift:false).length : 0 }}</strong
+              >&nbsp;&nbsp;|&nbsp; Total: {{ recipient.gifts ?
+              recipient.gifts.length : 0 }}
+            </small>
+          </p>
         </ion-label>
       </ion-item>
       <ion-item-options side="end">

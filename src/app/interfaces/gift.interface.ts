@@ -1,4 +1,4 @@
-import { Recipient } from "./recipient.interface";
+import { Recipient, RecipientResponseData } from "./recipient.interface";
 
 export interface Gift {
   id: number;
@@ -9,7 +9,7 @@ export interface Gift {
   updatedAt: Date;
   recipientId: number;
   userId: number;
-  recipient?: Recipient;
+  recipient?: { name: string; id: number };
 }
 
 export interface GiftResponseData {
@@ -21,4 +21,5 @@ export interface GiftResponseData {
   updatedAt: string;
   recipientId: number;
   userId: number;
+  recipient: RecipientResponseData;
 }

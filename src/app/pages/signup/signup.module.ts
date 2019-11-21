@@ -5,7 +5,6 @@ import { IonicModule } from "@ionic/angular";
 
 import { SignupPage } from "./signup";
 import { SignupPageRoutingModule } from "./signup-routing.module";
-import { ErrorBlockComponent } from "../../components/error-block/error-block.component";
 import { SharedModule } from "../../shared.module";
 
 @NgModule({

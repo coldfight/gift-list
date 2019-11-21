@@ -8,7 +8,6 @@ export interface Recipient {
   gifts?: Gift[];
 }
 
-
 export interface RecipientResponseData {
   id: number;
   name: string;
@@ -16,4 +15,6 @@ export interface RecipientResponseData {
   completed?: boolean;
   gifts?: Gift[];
   userId: number;
+  updatedAt: string;
+  createdAt: string;
 }

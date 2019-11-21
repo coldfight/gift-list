@@ -17,6 +17,7 @@ export class RecipientListPage implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.loading = true;
+
     // @todo: After we load the recipients, let's also load the gifts and map them to the recipients
     this._recipientsSubscription = this._recipientService.recipients.subscribe(
       (recipients: Recipient[]) => {

@@ -16,7 +16,12 @@
             <strong>
               {{ gift.name }}
             </strong>
-            <p>{{ gift.recipient ? gift.recipient.name : "N/A" }}</p>
+            <p>
+              <small
+                >{{ gift.recipient ? gift.recipient.name : "[Recipient Name]"
+                }}</small
+              >
+            </p>
           </h2>
         </ion-label>
         <ion-icon

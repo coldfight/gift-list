@@ -28,40 +28,47 @@ export class RecipientService {
     return this._newRecipient.asObservable();
   }
 
-  constructor(
-    private storage: Storage,
-    private _http: HttpClient,
-    private _userData: UserData
-  ) {}
+  constructor(private _http: HttpClient) {}
+
+  private convertResponseDataToRecipients(
+    responseData: RecipientResponseData[]
+  ): Recipient[] {
+    if (!responseData || responseData.length === 0) {
+      return [];
+    }
+    const recipients: Recipient[] = responseData.map(r => {
+      return {
+        id: r.id,
+        name: r.name,
+        spendLimit: r.spendLimit,
+        completed: r.completed,
+        userId: r.userId,
+        gifts: r.gifts
+      };
+    });
+    return recipients;
+  }
+
+  private convertResponseDataToRecipient(
+    responseData: RecipientResponseData
+  ): Recipient {
+    const recipients = this.convertResponseDataToRecipients([responseData]);
+    if (recipients && recipients.length > 0) {
+      return recipients[0];
+    }
+    return null;
+  }
 
   fetchRecipients() {
-    return this._userData.user.pipe(
-      take(1),
-      switchMap((user: User) => {
-        return this._http.get<RecipientResponseData[]>(
-          `${environment.apiUrl}/api/recipients`
-        );
-      }),
-      map((responseData: RecipientResponseData[]) => {
-        if (!responseData || responseData.length === 0) {
-          return [];
-        }
-
-        const recipients: Recipient[] = responseData.map(r => {
-          return {
-            id: r.id,
-            name: r.name,
-            spendLimit: r.spendLimit,
-            completed: r.completed,
-            userId: r.userId
-          };
-        });
-        return recipients;
-      }),
-      tap((recipients: Recipient[]) => {
-        this._recipients.next(recipients);
-      })
-    );
+    return this._http
+      .get<RecipientResponseData[]>(`${environment.apiUrl}/api/recipients`)
+      .pipe(
+        take(1),
+        map(this.convertResponseDataToRecipients.bind(this)),
+        tap((recipients: Recipient[]) => {
+          this._recipients.next(recipients);
+        })
+      );
   }
 
   addRecipient(name: string, spendLimit: number) {
@@ -72,6 +79,7 @@ export class RecipientService {
       })
       .pipe(
         take(1),
+        map(this.convertResponseDataToRecipient.bind(this)),
         tap((recipient: Recipient) => {
           this._newRecipient.next(recipient);
         })
