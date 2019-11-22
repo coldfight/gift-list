@@ -42,7 +42,7 @@ export class RecipientListPage implements OnInit, OnDestroy {
     this._recipientService.fetchRecipients().subscribe();
   }
 
-  onEdit(id: string) {}
-
-  onDelete(id: string) {}
+  onDelete(id: number) {
+    this._recipientService.deleteRecipient(id).subscribe();
+  }
 }

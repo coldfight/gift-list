@@ -15,7 +15,7 @@ import { StatusBar } from "@ionic-native/status-bar/ngx";
 import { Storage } from "@ionic/storage";
 import { Subscription } from "rxjs";
 
-import { UserData } from "./providers/user-data";
+import { UserData } from "./services/user-data.service";
 import { AuthType } from "./enums/auth-type.enum";
 import { take } from "rxjs/operators";
 

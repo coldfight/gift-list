@@ -7,7 +7,7 @@ import {
   RecipientResponseData
 } from "../interfaces/recipient.interface";
 import { take, switchMap, tap, map } from "rxjs/operators";
-import { UserData } from "../providers/user-data";
+import { UserData } from "./user-data.service";
 import { User } from "../interfaces/user.interface";
 import { environment } from "../../environments/environment";
 
@@ -85,5 +85,23 @@ export class RecipientService {
         })
       );
     // @todo: Update the list of recipients once we're done adding it.
+  }
+
+  deleteRecipient(id: number) {
+    return this._http.delete(`${environment.apiUrl}/api/recipients/${id}`).pipe(
+      take(1),
+      switchMap(() => {
+        return this._recipients.pipe();
+      }),
+      take(1),
+      map((recipients: Recipient[]) => {
+        return recipients.filter(g => {
+          return g.id !== id;
+        });
+      }),
+      tap((recipients: Recipient[]) => {
+        this._recipients.next(recipients);
+      })
+    );
   }
 }

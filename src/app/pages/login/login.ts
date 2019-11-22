@@ -2,7 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { FormGroup, FormControl, Validators } from "@angular/forms";
 import { Router } from "@angular/router";
 
-import { UserData } from "../../providers/user-data";
+import { UserData } from "../../services/user-data.service";
 import { HttpErrorResponse } from "@angular/common/http";
 
 @Component({

@@ -5,7 +5,7 @@ import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 
 import { Gift, GiftResponseData } from "../interfaces/gift.interface";
 import { environment } from "../../environments/environment";
-import { UserData } from "../providers/user-data";
+import { UserData } from "./user-data.service";
 import { RecipientService } from "./recipient.service";
 
 @Injectable({
@@ -23,35 +23,6 @@ export class GiftService {
     private _userData: UserData,
     private _recipientService: RecipientService
   ) {}
-
-  addGift(name: string, price: number, recipientId: number) {
-    return this._http
-      .post(`${environment.apiUrl}/api/gifts`, {
-        name,
-        price,
-        recipientId
-      })
-      .pipe(take(1));
-    // @todo: Update the list of gifts once we're done adding it.
-  }
-
-  deleteGift(id: number) {
-    return this._http.delete(`${environment.apiUrl}/api/gifts/${id}`).pipe(
-      take(1),
-      switchMap(response => {
-        return this._gifts.pipe();
-      }),
-      take(1),
-      map((gifts: Gift[]) => {
-        return gifts.filter(g => {
-          return g.id !== id;
-        });
-      }),
-      tap((gifts: Gift[]) => {
-        this._gifts.next(gifts);
-      })
-    );
-  }
 
   private replaceGift(gifts: Gift[], updatedGift: Gift): Gift[] {
     const giftsCopy = gifts.map(g => {
@@ -146,5 +117,34 @@ export class GiftService {
           this._gifts.next(gifts);
         })
       );
+  }
+
+  addGift(name: string, price: number, recipientId: number) {
+    return this._http
+      .post(`${environment.apiUrl}/api/gifts`, {
+        name,
+        price,
+        recipientId
+      })
+      .pipe(take(1));
+    // @todo: Update the list of gifts once we're done adding it.
+  }
+
+  deleteGift(id: number) {
+    return this._http.delete(`${environment.apiUrl}/api/gifts/${id}`).pipe(
+      take(1),
+      switchMap(() => {
+        return this._gifts.pipe();
+      }),
+      take(1),
+      map((gifts: Gift[]) => {
+        return gifts.filter(g => {
+          return g.id !== id;
+        });
+      }),
+      tap((gifts: Gift[]) => {
+        this._gifts.next(gifts);
+      })
+    );
   }
 }

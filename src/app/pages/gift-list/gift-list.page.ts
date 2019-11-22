@@ -38,8 +38,6 @@ export class GiftListPage implements OnInit, OnDestroy {
     this._giftService.fetchGifts().subscribe();
   }
 
-  onEdit(id: number) {}
-
   onDelete(id: number) {
     this._giftService.deleteGift(id).subscribe();
   }

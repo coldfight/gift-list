@@ -9,7 +9,7 @@ import {
   Router
 } from "@angular/router";
 import { Observable, of } from "rxjs";
-import { UserData } from "../providers/user-data";
+import { UserData } from "./user-data.service";
 import { take, switchMap, tap } from "rxjs/operators";
 
 @Injectable({

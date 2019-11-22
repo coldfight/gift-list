@@ -61,6 +61,13 @@ const routes: Routes = [
               import("../recipient-new/recipient-new.module").then(
                 m => m.RecipientNewPageModule
               )
+          },
+          {
+            path: "edit/:id",
+            loadChildren: () =>
+              import("../recipient-edit/recipient-edit.module").then(
+                m => m.RecipientEditPageModule
+              )
           }
         ]
       },

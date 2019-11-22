@@ -10,7 +10,7 @@ import {
 import { Observable, of, throwError } from "rxjs";
 import { tap, take, switchMap, map, catchError } from "rxjs/operators";
 import { Router } from "@angular/router";
-import { UserData } from "../providers/user-data";
+import { UserData } from "../services/user-data.service";
 import { User } from "../interfaces/user.interface";
 
 @Injectable()
@@ -58,7 +58,7 @@ export class AuthInterceptor implements HttpInterceptor {
           request.url.includes("/auth/token")
         ) {
           this._userData.logout(false).subscribe(() => {
-            console.log("HERE")
+            console.log("HERE");
             this._router.navigateByUrl("/login");
           });
           return throwError(error);
