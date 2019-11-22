@@ -6,7 +6,7 @@ import { Routes, RouterModule } from "@angular/router";
 import { IonicModule } from "@ionic/angular";
 
 import { RecipientNewPage } from "./recipient-new.page";
-import { ErrorBlockComponent } from "../../components/error-block/error-block.component";
+import { SharedModule } from "../../shared.module";
 
 const routes: Routes = [
   {
@@ -21,8 +21,9 @@ const routes: Routes = [
     FormsModule,
     ReactiveFormsModule,
     IonicModule,
-    RouterModule.forChild(routes)
+    RouterModule.forChild(routes),
+    SharedModule
   ],
-  declarations: [RecipientNewPage, ErrorBlockComponent]
+  declarations: [RecipientNewPage]
 })
 export class RecipientNewPageModule {}

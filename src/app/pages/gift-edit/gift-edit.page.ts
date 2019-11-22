@@ -22,11 +22,10 @@ import { switchMap, map, take } from "rxjs/operators";
   styleUrls: ["./gift-edit.page.scss"]
 })
 export class GiftEditPage implements OnInit, OnDestroy {
+  private _activatedRouteSubscription: Subscription;
   loading = false;
   errors: { [key: string]: string } = {};
   gift: Gift;
-  private _activatedRouteSubscription: Subscription;
-
   form: FormGroup;
 
   validationMessages = {

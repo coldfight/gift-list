@@ -59,6 +59,21 @@ export class RecipientService {
     return null;
   }
 
+  private replaceRecipient(
+    recipients: Recipient[],
+    updatedRecipient: Recipient
+  ): Recipient[] {
+    const recipientsCopy = recipients.map(r => {
+      if (r.id === updatedRecipient.id) {
+        // when finding the matched id, return the updatedGift instead of the original one.
+        return updatedRecipient;
+      }
+      return { ...r };
+    });
+
+    return recipientsCopy;
+  }
+
   fetchRecipients() {
     return this._http
       .get<RecipientResponseData[]>(`${environment.apiUrl}/api/recipients`)
@@ -69,6 +84,12 @@ export class RecipientService {
           this._recipients.next(recipients);
         })
       );
+  }
+
+  fetchRecipient(id: number): Observable<Recipient> {
+    return this._http
+      .get<RecipientResponseData>(`${environment.apiUrl}/api/recipients/${id}`)
+      .pipe(take(1), map(this.convertResponseDataToRecipient.bind(this)));
   }
 
   addRecipient(name: string, spendLimit: number) {
@@ -103,5 +124,29 @@ export class RecipientService {
         this._recipients.next(recipients);
       })
     );
+  }
+
+  updateRecipient(id: number, recipient: Recipient): Observable<Recipient[]> {
+    let updatedRecipient: Recipient;
+    return this._http
+      .patch(`${environment.apiUrl}/api/recipients/${id}`, {
+        name: recipient.name,
+        spendLimit: recipient.spendLimit
+      })
+      .pipe(
+        take(1),
+        map(this.convertResponseDataToRecipient.bind(this)),
+        switchMap((fetchedRecipient: Recipient) => {
+          updatedRecipient = fetchedRecipient;
+          return this._recipients.pipe();
+        }),
+        take(1),
+        map((recipients: Recipient[]) => {
+          return this.replaceRecipient(recipients, updatedRecipient);
+        }),
+        tap((recipients: Recipient[]) => {
+          this._recipients.next(recipients);
+        })
+      );
   }
 }

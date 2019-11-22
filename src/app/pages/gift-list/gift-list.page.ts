@@ -20,7 +20,6 @@ export class GiftListPage implements OnInit, OnDestroy {
     this.loading = true;
     this._giftsSubscription = this._giftService.gifts.subscribe(
       (gifts: Gift[]) => {
-        gifts.map(g => console.log(g.bought));
         this.gifts = gifts;
         this.loading = false;
       }
